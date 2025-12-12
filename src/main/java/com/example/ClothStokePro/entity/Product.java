@@ -27,4 +27,3 @@ public class Product {
     @Column(name = "created_at")
     private final LocalDateTime createdAt = LocalDateTime.now();
 }
-

@@ -1,4 +1,5 @@
 package com.example.ClothStokePro.entity;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -23,4 +24,3 @@ public class Category {
     @Column(name = "created_at")
     private final LocalDateTime createdAt = LocalDateTime.now();
 }
-
