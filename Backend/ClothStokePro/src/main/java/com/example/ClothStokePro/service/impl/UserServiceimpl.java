@@ -1,5 +1,6 @@
 package com.example.ClothStokePro.service.impl;
 
+import com.example.ClothStokePro.Mapper.EntityDtoMapper;
 import com.example.ClothStokePro.dto.LoginRequestDto;
 import com.example.ClothStokePro.dto.Response;
 import com.example.ClothStokePro.dto.UserDto;
@@ -7,7 +8,6 @@ import com.example.ClothStokePro.entity.User;
 import com.example.ClothStokePro.enums.UserRole;
 import com.example.ClothStokePro.exception.InvalidCredentialException;
 import com.example.ClothStokePro.exception.NotFoundException;
-import com.example.ClothStokePro.Mapper.EntityDtoMapper;
 import com.example.ClothStokePro.repository.UserRepo;
 import com.example.ClothStokePro.security.JwtUtils;
 import com.example.ClothStokePro.service.interf.UserService;
@@ -20,26 +20,23 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceimpl implements UserService {
 
-
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final EntityDtoMapper entityDtoMapper;
 
-
     @Override
     public Response registerUser(UserDto registrationRequest) {
-        UserRole role = UserRole.USER;
 
-        if (registrationRequest.getRole() != null && registrationRequest.getRole().equalsIgnoreCase("admin")) {
+        UserRole role = UserRole.USER;
+        if (registrationRequest.getRole() != null &&
+            registrationRequest.getRole().equalsIgnoreCase("admin")) {
             role = UserRole.ADMIN;
         }
 
@@ -52,9 +49,9 @@ public class UserServiceimpl implements UserService {
                 .build();
 
         User savedUser = userRepo.save(user);
-        System.out.println(savedUser);
 
         UserDto userDto = entityDtoMapper.mapUserToDtoBasic(savedUser);
+
         return Response.builder()
                 .status(200)
                 .message("User Successfully Added")
@@ -62,15 +59,16 @@ public class UserServiceimpl implements UserService {
                 .build();
     }
 
-
-
     @Override
-    public Response loginUser(LoginRequest loginRequest) {
+    public Response loginUser(LoginRequestDto loginRequest) {
 
-        User user = userRepo.findByEmail(loginRequest.getEmail()).orElseThrow(()-> new NotFoundException("Email not found"));
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())){
+        User user = userRepo.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new NotFoundException("Email not found"));
+
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new InvalidCredentialException("Password does not match");
         }
+
         String token = jwtUtils.generateToken(user);
 
         return Response.builder()
@@ -85,8 +83,8 @@ public class UserServiceimpl implements UserService {
     @Override
     public Response getAllUsers() {
 
-        List<User> users = userRepo.findAll();
-        List<UserDto> userDtos = users.stream()
+        List<UserDto> userDtos = userRepo.findAll()
+                .stream()
                 .map(entityDtoMapper::mapUserToDtoBasic)
                 .toList();
 
@@ -98,29 +96,28 @@ public class UserServiceimpl implements UserService {
 
     @Override
     public User getLoginUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String  email = authentication.getName();
-        log.info("User Email is: " + email);
+
+        Authentication authentication = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+        String email = authentication.getName();
+        log.info("User Email is: {}", email);
+
         return userRepo.findByEmail(email)
-                .orElseThrow(()-> new UsernameNotFoundException("User Not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     @Override
     public Response getUserInfoAndOrderHistory() {
+
         User user = getLoginUser();
-        UserDto userDto = entityDtoMapper.mapUserToDtoPlusAddressAndOrderHistory(user);
+        UserDto userDto =
+                entityDtoMapper.mapUserToDtoPlusAddressAndOrderHistory(user);
 
         return Response.builder()
                 .status(200)
                 .user(userDto)
                 .build();
-    }
-
-
-
-    @Override
-    public Response loginUser(LoginRequestDto loginRequest) {
-        
-        throw new UnsupportedOperationException("Unimplemented method 'loginUser'");
     }
 }
