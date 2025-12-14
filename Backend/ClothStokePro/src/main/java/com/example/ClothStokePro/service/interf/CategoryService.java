@@ -1,4 +1,4 @@
-package com.example.ClothStokePro.service;
+package com.example.ClothStokePro.service.interf;
 
 import com.example.ClothStokePro.dto.AddressDto;
 import com.example.ClothStokePro.dto.CategoryDto;
@@ -10,6 +10,7 @@ public interface CategoryService {
     Response createCategory(CategoryDto categoryRequest);
 
     Response updateCategory(Long categoryId, CategoryDto categoryRequest);
+    Response deleteCategory(Long categoryId); 
 
     Response getAllCategories();
 

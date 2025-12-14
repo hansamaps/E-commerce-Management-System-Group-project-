@@ -1,4 +1,4 @@
-package com.example.ClothStokePro.service;
+package com.example.ClothStokePro.service.interf;
 
 
 import com.example.ClothStokePro.dto.Response;
