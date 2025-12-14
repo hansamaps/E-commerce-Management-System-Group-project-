@@ -1,6 +1,5 @@
 package com.example.ClothStokePro.service.interf;
 
-
 import com.example.ClothStokePro.dto.Response;
 import org.springframework.web.multipart.MultipartFile;
 
