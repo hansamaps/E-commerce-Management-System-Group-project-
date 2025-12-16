@@ -34,4 +34,9 @@ public class Orderitem {
 
     @Column(name = "created_at")
     private final LocalDateTime createdAt = LocalDateTime.now();
+
+    public Long getProductId() {
+
+        throw new UnsupportedOperationException("Unimplemented method 'getProductId'");
+    }
 }
