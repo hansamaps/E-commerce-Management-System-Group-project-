@@ -18,6 +18,7 @@ public class OrderitemSpecification {
         throw new UnsupportedOperationException("Unimplemented method 'hasItemId'");
     }
 
+    @SuppressWarnings("rawtypes")
     public static Specification hasStatus(OrderStatus status) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'hasStatus'");
